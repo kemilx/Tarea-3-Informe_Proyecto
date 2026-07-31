@@ -41,3 +41,5 @@ Content-Type: application/json
 }
 
 ###
+
+DELETE {{host}}/api/animes/2

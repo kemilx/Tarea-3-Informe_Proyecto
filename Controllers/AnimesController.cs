@@ -101,6 +101,20 @@ public class AnimesController(AnimeDbContext context) : ControllerBase
         return Ok(anime);
     }
 
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var anime = await context.Animes.FindAsync(id);
+        if (anime is null)
+        {
+            return NotFound(new { message = $"No se encontró el anime con id {id}." });
+        }
+
+        context.Animes.Remove(anime);
+        await context.SaveChangesAsync();
+        return NoContent();
+    }
+
     private Task<bool> TitleExists(string title, int? excludedId = null)
     {
         return context.Animes.AnyAsync(anime =>
