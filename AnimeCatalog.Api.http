@@ -1,0 +1,11 @@
+@host = http://localhost:5164
+
+GET {{host}}/api/animes
+Accept: application/json
+
+###
+
+GET {{host}}/api/animes/1
+Accept: application/json
+
+###
