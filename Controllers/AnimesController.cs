@@ -30,6 +30,32 @@ public class AnimesController(AnimeDbContext context) : ControllerBase
         return Ok(await query.OrderBy(anime => anime.Title).ToListAsync());
     }
 
+    [HttpGet("statistics")]
+    public async Task<ActionResult<AnimeStatisticsResponse>> GetStatistics()
+    {
+        var totalAnimes = await context.Animes.CountAsync();
+        var averageRating = totalAnimes == 0
+            ? 0
+            : await context.Animes.AverageAsync(anime => anime.Rating);
+        var totalEpisodes = await context.Animes.SumAsync(anime => anime.Episodes);
+
+        var groupedStatuses = await context.Animes
+            .GroupBy(anime => anime.Status)
+            .Select(group => new { Status = group.Key, Count = group.Count() })
+            .ToListAsync();
+
+        var byStatus = groupedStatuses
+            .Select(group => new AnimeStatusCount(group.Status.ToString(), group.Count))
+            .OrderBy(group => group.Status)
+            .ToList();
+
+        return Ok(new AnimeStatisticsResponse(
+            totalAnimes,
+            decimal.Round(averageRating, 1),
+            totalEpisodes,
+            byStatus));
+    }
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Anime>> GetById(int id)
     {

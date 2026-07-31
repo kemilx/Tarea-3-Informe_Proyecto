@@ -3,7 +3,7 @@ namespace AnimeCatalog.Api.Models;
 public enum AnimeStatus
 {
     Announced,
-    Airing,
+    Ongoing,
     Finished,
     Hiatus,
     Cancelled
