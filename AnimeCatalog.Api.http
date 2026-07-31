@@ -10,6 +10,11 @@ Accept: application/json
 
 ###
 
+GET {{host}}/api/animes/statistics
+Accept: application/json
+
+###
+
 POST {{host}}/api/animes
 Content-Type: application/json
 

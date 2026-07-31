@@ -1,4 +1,5 @@
 using AnimeCatalog.Api.Models;
+using AnimeCatalog.Api.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace AnimeCatalog.Api.Dtos;
@@ -21,7 +22,7 @@ public class AnimeRequest
     [StringLength(1000, ErrorMessage = "La sinopsis no puede superar 1000 caracteres.")]
     public string? Synopsis { get; set; }
 
-    [Range(1917, 2100, ErrorMessage = "El año de estreno debe estar entre 1917 y 2100.")]
+    [ReleaseYear]
     public int ReleaseYear { get; set; }
 
     [Range(1, 5000, ErrorMessage = "La cantidad de episodios debe estar entre 1 y 5000.")]
