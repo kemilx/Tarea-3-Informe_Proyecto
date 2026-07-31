@@ -25,3 +25,19 @@ Content-Type: application/json
 }
 
 ###
+
+PUT {{host}}/api/animes/1
+Content-Type: application/json
+
+{
+  "title": "Fullmetal Alchemist: Brotherhood",
+  "genre": "Acción, aventura y fantasía",
+  "studio": "Bones",
+  "synopsis": "Dos hermanos alquimistas intentan recuperar lo que perdieron.",
+  "releaseYear": 2009,
+  "episodes": 64,
+  "rating": 9.2,
+  "status": "Finished"
+}
+
+###
