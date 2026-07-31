@@ -72,9 +72,40 @@ public class AnimesController(AnimeDbContext context) : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = anime.Id }, anime);
     }
 
-    private Task<bool> TitleExists(string title)
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<Anime>> Update(int id, AnimeRequest request)
     {
-        return context.Animes.AnyAsync(anime => anime.Title == title);
+        var anime = await context.Animes.FindAsync(id);
+        if (anime is null)
+        {
+            return NotFound(new { message = $"No se encontró el anime con id {id}." });
+        }
+
+        var normalizedTitle = request.Title.Trim();
+        if (await TitleExists(normalizedTitle, id))
+        {
+            return Conflict(new { message = "Ya existe otro anime con ese título." });
+        }
+
+        anime.Title = normalizedTitle;
+        anime.Genre = request.Genre.Trim();
+        anime.Studio = CleanOptional(request.Studio);
+        anime.Synopsis = CleanOptional(request.Synopsis);
+        anime.ReleaseYear = request.ReleaseYear;
+        anime.Episodes = request.Episodes;
+        anime.Rating = request.Rating;
+        anime.Status = request.Status;
+        anime.UpdatedAtUtc = DateTime.UtcNow;
+
+        await context.SaveChangesAsync();
+        return Ok(anime);
+    }
+
+    private Task<bool> TitleExists(string title, int? excludedId = null)
+    {
+        return context.Animes.AnyAsync(anime =>
+            anime.Title == title &&
+            (!excludedId.HasValue || anime.Id != excludedId.Value));
     }
 
     private static string? CleanOptional(string? value)
